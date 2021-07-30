@@ -1,0 +1,27 @@
+version: "3"
+services:
+  db:
+    image: postgres:13-alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: postgres
+  api:
+    build: 
+      context: ./go/api
+    environment: 
+      DB_URL: "postgres://postgres:postgres@db:5432/postgres?sslmode=disable"
+    ports: 
+      - 8000:8000
+  table_parser:
+    build:
+      context: ./python/table_parser
+    environment: 
+      AT_MINUTES: ":00"
+  frontend:
+    build:
+      context: ./js/ui
+    environment: 
+      API_HOST: http://api:8000/
+    ports: 
+      - 80:80

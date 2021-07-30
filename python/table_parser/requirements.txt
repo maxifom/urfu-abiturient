@@ -1,0 +1,5 @@
+schedule==0.6.0
+requests==2.24.0
+pandas==1.3.0
+Scrapy==2.5.0
+psycopg @ git+https://github.com/psycopg/psycopg.git@678e9876a838d457d2203e387cf3a35ef44ab41c#subdirectory=psycopg
