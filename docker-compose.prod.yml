@@ -21,6 +21,7 @@ services:
     environment: 
       AT_MINUTES: ":00"
       DB_URL: "postgres://postgres:${POSTGRES_PASSWORD}@db:5432/postgres"
+      PYTHONUNBUFFERED: 1
     logging:
       options:
         max-size: "10m"
