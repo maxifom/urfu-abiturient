@@ -1,4 +1,5 @@
 import argparse
+import logging
 import os
 import time
 from functools import partial
@@ -77,7 +78,7 @@ def download():
 
 
 def job(db_url: str):
-    print("RUN JOB")
+    logging.info("RUN JOB")
     df = download()
     with psycopg.connect(db_url) as conn:
         with conn.cursor() as cursor:
@@ -93,20 +94,21 @@ VALUES (1, NOW())
 ON CONFLICT (id) DO UPDATE SET last_updated = NOW()
 """)
             conn.commit()
-    print("FINISHED RUN JOB")
+    logging.info("FINISHED RUN JOB")
 
 
 def main():
+    logging.basicConfig(level=logging.INFO)
     argparser = argparse.ArgumentParser()
     argparser.add_argument("--db-url",
                            default=os.getenv("DB_URL", "postgres://postgres:postgres@localhost:5432/postgres"),
                            type=str)
     argparser.add_argument('--at-minutes', default=os.getenv("AT_MINUTES", ":00"), type=str)
     args = argparser.parse_args()
-    print(args)
+    logging.info(args)
     schedule_job = partial(job, db_url=args.db_url)
     schedule.every().hour.at(args.at_minutes).do(schedule_job)
-    print("JOB:", schedule.jobs[0])
+    logging.info(schedule.jobs[0])
     while True:
         schedule.run_pending()
         time.sleep(1)
