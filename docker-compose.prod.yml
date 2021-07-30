@@ -20,6 +20,7 @@ services:
     image: maxifom/urfu-abiturient:table-parser
     environment: 
       AT_MINUTES: ":00"
+      DB_URL: "postgres://postgres:${POSTGRES_PASSWORD}@db:5432/postgres"
     logging:
       options:
         max-size: "10m"
