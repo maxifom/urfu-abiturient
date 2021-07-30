@@ -13,7 +13,7 @@ services:
       DB_URL: "postgres://postgres:postgres@db:5432/postgres?sslmode=disable"
     ports: 
       - 8000:8000
-  table_parser:
+  table-parser:
     build:
       context: ./python/table_parser
     environment: 

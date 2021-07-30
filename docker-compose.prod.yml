@@ -1,0 +1,43 @@
+version: "2"
+services:
+  db:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+  api:
+    image: maxifom/urfu-abiturient:api
+    environment: 
+      DB_URL: "postgres://postgres:${POSTGRES_PASSWORD}@db:5432/postgres?sslmode=disable"
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+  table-parser:
+    image: maxifom/urfu-abiturient:table-parser
+    environment: 
+      AT_MINUTES: ":00"
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+  frontend:
+    image: maxifom/urfu-abiturient:ui
+    environment: 
+      API_HOST: http://api:8000/
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    labels:
+      traefik.http.routers.urfu-abit-ui.tls.certresolver: acmeResolver
+      traefik.enable: "true"
+      traefik.http.routers.urfu-abit-ui.rule: Host(`urfu-abit.maxifom.com`)
+      traefik.http.routers.urfu-abit-ui1.rule: Host(`urfu-abit.maxifom.com`)
+      traefik.http.routers.urfu-abit-ui.entrypoints: https
+      traefik.http.routers.urfu-abit-ui1.entrypoints: http
+      traefik.http.routers.urfu-abit-ui1.middlewares: https@file
+      traefik.http.services.urfu-abit-ui.loadbalancer.server.port: "80"
